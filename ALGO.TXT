@@ -1,0 +1,41 @@
+Algorithme pour calculer la FFT d'un signal:
+
+- initialiser N
+- calculer le nombre d'iterations n=log4(N)
+- discretiser le signal d'entree pour obtenir N points
+- lire le fichier "ROM" qui contient les puissances
+- calculer les coefficients mu
+- remplir la memoire MEM1 en "SINK MODE" :
+    - pour chaque sous-memoire de SM1 jusqu'a SM4
+    |   - placer un point du signal d'entree a l'arriere
+    |	  de la queue de chaque sous-memoire
+
+- pour n iterations
+|   - pour N/4 cycles d'horloge
+|   |	- si c'est la premiere iteration
+|   |	|   - prendre un point de chaque sous memoire SM1 a SM4
+|   |   |     pour former un vecteur z de 4 points
+|   |   |   - calculer avec l'unite arithmetique v = T4.z ("preweighting")
+|   |   |   - determiner les coefficients mu : w3, w2, w1 a appliquer
+|   |   |   - calculer avec l'unite arithmetique w * v    ("weighting")
+|   |   |   - remplir la memoire MEM2 en "SINK MODE" (sous-memoires 5,6,7,8)
+|   |   - sinon
+|   |   |   - si l'iteration est paire MEM2 est en "SINK MODE"
+|   |   |     et MEM1 en "INPUT MODE"
+|   |   |   - sinon MEM1 est en "SINK MODE" et MEM2 en "INPUT MODE"
+|   |   |   - pour les 4 sous-queues de la sous-memoire courante
+|   |   |   |    - prendre un point  dans la memoire en "INPUT MODE"
+|   |   |   |      pour former un vecteur z de 4 points
+|   |   |   - calculer avec l'unite arithmetique v = T4.z ("preweighting")
+|   |   |   - determiner les coefficients mu : w3, w2, w1 a appliquer
+|   |   |     l'index de base est donne par : cycle_horloge*4+iteration*N
+|   |   |   - calculer avec l'unite arithmetique w * v    ("weighting")
+|   |   |   - remplir la memoire en "SINK MODE"
+|   |   |   - passer a la sous-memoire suivante
+|   |   - passer au cycle d'horloge suivant
+|   - afficher le contenu des 4 sous-memoires remplies
+|   - passer a l'iteration suivante
+- calcule l'amplitude et la phase
+- sauve la FFT du signal
+
+
